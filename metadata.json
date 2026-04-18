@@ -1,0 +1,6 @@
+{
+  "name": "食光魔盒",
+  "description": "一款专为青少年和儿童设计的智能菜谱推荐与营养分析应用，支持语音点餐，界面可爱，互动简单。",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": []
+}
