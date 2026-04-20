@@ -46,7 +46,7 @@ async function startServer() {
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: "qwen-max-latest", // Update to the absolute latest rolling release
+          model: "qwen-plus", // Using Qwen Plus for much faster and stable responses (avoids frontend timeout)
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: `用户想吃或者有这些食材："${query}"` }
@@ -65,7 +65,14 @@ async function startServer() {
       const content = data.choices[0]?.message?.content;
       
       if (content) {
-        res.json(JSON.parse(content));
+        let jsonStr = content.trim();
+        // Fallback to strip markdown if the model mistakenly included it
+        if (jsonStr.startsWith("```json")) {
+          jsonStr = jsonStr.replace(/^```json\n?/, '').replace(/```$/, '').trim();
+        } else if (jsonStr.startsWith("```")) {
+          jsonStr = jsonStr.replace(/^```\n?/, '').replace(/```$/, '').trim();
+        }
+        res.json(JSON.parse(jsonStr));
       } else {
         res.status(500).json({ error: "No recipe generated in response" });
       }
